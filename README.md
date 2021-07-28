@@ -35,9 +35,13 @@
 2. 엑셀 틀 구성  
 3. 엑셀로 데이터 출력  
 
-### **준비 운동**  
+### **테스트**  
 * 프로그램을 만들기 전에 확인해야 하는 점이 있다.  
-  1. 회사가 달라도 동일한 코드로 원하는 데이터를 얻을 수 있는가?  
+  1. 검색 시 생기는 경고창 처리는 어떻게 해야 하는가?  
+      * 검색을 하지 않는다. 
+  2. 특정 요소 찾기는 어떻게 해야 하는가?  
+      * xpath를 이용한다. 
+  3. 회사가 달라도 동일한 코드로 원하는 데이터를 얻을 수 있는가?  
 
 --------
 ## **프로젝트 진행**  
@@ -54,8 +58,33 @@
     엔터를 두 번 누른다. 
     ```
 
-### **에러**  
+* 웹 페이지에서 특정 클래스의 값을 어떻게 가져올까?  
+    ```
+    selenium에서는 xpath를 이용해서 특정 값에 쉽게 접근할 수 있다. 
+    ```
+* xpath는 어떻게 쓰지? 
+    ```
+    https://testmanager.tistory.com/121
+    xpath 문법
+    ```
 
+### **에러**  
+* DeprecationWarning: use driver.switch_to.alert instead driver.switch_to_alert()
+    ```
+    앞으로 지원되지 않을 것이므로 사용을 자제해달라는 경고이다. 
+    그런데, driver.switch.to_alert() 이렇게 바꾸니 작동하지 않는다. 왜 그런걸까?
+    ```   
+* USB: usb_device_handle_win.cc:1048 Failed to read descriptor from node connection: 시스템에 부착된 장치가 작동하지 않습니다.
+    ```
+    https://stackoverflow.com/questions/64927909/failed-to-read-descriptor-from-node-connection-a-device-attached-to-the-system
+    크롬 드라이버에서 생기는 문제인 것 같다. 해가되지 않는 에러라고 한다. 모두들 경고창을 무시하는 듯 하다. 
+    ```
+* selenium.common.exceptions.UnexpectedAlertPresentException: Alert Text: ...
+    ```
+    분명 경고창에 확인을 눌렀는데 계속 알림이 뜬다. 생겼다가 안 생겼다가 한다. 웹페이지의 로딩 시간의 차이 때문에 생기는 것일까? 3시간째 찾아보는 중이다.. 
+    아무리 해도 안 고쳐져서 검색 방식을 변경했다. 
+    ```
 ----
 ## **참고문서**  
 * 마크다운 문법 https://gist.github.com/ihoneymon/652be052a0727ad59601
+* xpath https://wkdtjsgur100.github.io/selenium-xpath/
