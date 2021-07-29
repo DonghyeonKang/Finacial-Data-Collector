@@ -26,11 +26,9 @@
 * selenium
 
 ### **클래스**
-* **search data**  
+* **FDC**  
 1. 재무 데이터 수집(업데이트)  
 2. 회사 목록 수집(업데이트)  
-
-* **print data**  
 1. 출력할 회사명  
 2. 엑셀 틀 구성  
 3. 엑셀로 데이터 출력  
@@ -67,6 +65,7 @@
     https://testmanager.tistory.com/121
     xpath 문법
     ```
+* html은 쌍따옴표와 따옴표 구분이 있을까? 
 
 ### **에러**  
 * DeprecationWarning: use driver.switch_to.alert instead driver.switch_to_alert()
@@ -83,6 +82,15 @@
     ```
     분명 경고창에 확인을 눌렀는데 계속 알림이 뜬다. 생겼다가 안 생겼다가 한다. 웹페이지의 로딩 시간의 차이 때문에 생기는 것일까? 3시간째 찾아보는 중이다.. 
     아무리 해도 안 고쳐져서 검색 방식을 변경했다. 
+    ```
+* Message: stale element reference: element is not attached to the page document
+    ```
+    element를 찾을 수 없다는 에러이다. 로딩 시간을 충분히 줘보았지만, 똑같은 에러가 발생했다. 
+    element를 몇 번 출력해서 비교해보니, webdrive에서 제공하는 element가 매번 달랐다. 즉 새로고침을 하면, 새로 element를 찾아서 진행해야지 싶다. 
+    ```
+* Mixed Content: The page at '' was loaded over HTTPS, but requested an insecure element ''. This request was automatically upgraded to HTTPS, For more information see https://blog.chromium.org/2019/10/no-more-mixed-messages-about-https.html", source: 
+    ```
+    headless로 크롬창을 끄고 실행하려하니 이러한 경고가 출력되었다. 
     ```
 ----
 ## **참고문서**  
