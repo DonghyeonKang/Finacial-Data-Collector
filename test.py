@@ -1,53 +1,69 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
 
 companies = ['한진중공업', '삼성전자', 'SK']
 
-driver = webdriver.Chrome('chromedriver.exe')
+driver = webdriver.Chrome()
 driver.get("https://comp.fnguide.com/SVO2/ASP/SVD_UJRank.asp?pGB=1&gicode=A079160&cID=&MenuYn=Y&ReportGB=&NewMenuID=301&stkGb=701")
 
+# open a link in a new window
+# driver = webdriver.Chrome('chromedriver.exe')
+# driver.get("https://comp.fnguide.com/SVO2/ASP/SVD_UJRank.asp?pGB=1&gicode=A079160&cID=&MenuYn=Y&ReportGB=&NewMenuID=301&stkGb=701")
+# selectopt = driver.find_element_by_id("selUpjong")
+# selectopt.send_keys(Keys.ENTER)
+# time.sleep(1)
+# selectopt.send_keys(Keys.ARROW_UP)
+# time.sleep(1)
+# selectopt.send_keys(Keys.ENTER)
+# time.sleep(1)
+# button = driver.find_element_by_id("btnSearch")
+# time.sleep(1)
+# button.click()
+# #button.execute_script("window.open('');")
+# time.sleep(10)
 # ---- 1. 검색 시 생기는 경고창 처리는 어떻게 해야 하는가? ----
-selectopt = driver.find_element_by_id("selUpjong")
-selectopt.send_keys(Keys.ENTER)
-selectopt.send_keys(Keys.ARROW_UP)
-selectopt.send_keys(Keys.ENTER)
+# selectopt = driver.find_element_by_id("selUpjong")
+# selectopt.send_keys(Keys.ENTER)
+# selectopt.send_keys(Keys.ARROW_UP)
+# selectopt.send_keys(Keys.ENTER)
 
-button = driver.find_element_by_id("btnSearch")
-button.send_keys(Keys.ENTER)
-time.sleep(8)  # 로딩 대기 시간
+# button = driver.find_element_by_id("btnSearch")
+# button.send_keys(Keys.ENTER)
+# time.sleep(8)  # 로딩 대기 시간
 
-elements = driver.find_elements_by_xpath('//div[@id="UJRankGrid"]//tbody/tr/td[@class=" l tbold"]/a')         # SK 하이닉스
+# elements = driver.find_elements_by_xpath('//div[@id="UJRankGrid"]//tbody/tr/td[@class=" l tbold"]/a')         # SK 하이닉스
 
-for i in range(1, len(elements) + 1):
-    a = driver.find_element_by_xpath('//div[@id="UJRankGrid"]//tbody/tr[%d]/td[@class=" l tbold"]/a' % i)
-    a.send_keys(Keys.ENTER)
-    time.sleep(1)
-    driver.back()
-    button = driver.find_element_by_id("btnSearch")
-    button.send_keys(Keys.ENTER)
-    time.sleep(6)
-# a = elements[0]
-# a.send_keys(Keys.ENTER)
+# for i in range(1, len(elements) + 1):
+#     a = driver.find_element_by_xpath('//div[@id="UJRankGrid"]//tbody/tr[%d]/td[@class=" l tbold"]/a' % i)
+#     a.send_keys(Keys.ENTER)
+#     time.sleep(1)
+#     driver.back()
+#     button = driver.find_element_by_id("btnSearch")
+#     button.send_keys(Keys.ENTER)
+#     time.sleep(6)
+# # a = elements[0]
+# # a.send_keys(Keys.ENTER)
 
-time.sleep(1)  # 로딩 대기 시간
-button = driver.find_element_by_xpath("//div[@class='headergnb']//li[@class='gnb_dp2 gnb_dp2_start']/a[3]")
-button.send_keys(Keys.ENTER)
-time.sleep(1)  # 로딩 대기 시간
+# time.sleep(1)  # 로딩 대기 시간
+# button = driver.find_element_by_xpath("//div[@class='headergnb']//li[@class='gnb_dp2 gnb_dp2_start']/a[3]")
+# button.send_keys(Keys.ENTER)
+# time.sleep(1)  # 로딩 대기 시간
 
-button = driver.find_element_by_id("grid2_7")
-button.send_keys(Keys.ENTER)
-time.sleep(1)  # 로딩 대기 시간
+# button = driver.find_element_by_id("grid2_7")
+# button.send_keys(Keys.ENTER)
+# time.sleep(1)  # 로딩 대기 시간
 
-elements =  driver.find_elements_by_xpath('//div[@id="divDaechaY"]//tbody/tr[46]/td')
-if elements[len(elements) - 1].text != " ":
-    print(elements[len(elements) - 1].text)
-else:
-    print(elements[len(elements) - 2].text)
+# elements =  driver.find_elements_by_xpath('//div[@id="divDaechaY"]//tbody/tr[46]/td')
+# if elements[len(elements) - 1].text != " ":
+#     print(elements[len(elements) - 1].text)
+# else:
+#     print(elements[len(elements) - 2].text)
 
-for i in elements:
-   print(i.text)
-time.sleep(1)
+# for i in elements:
+#    print(i.text)
+# time.sleep(1)
 
 
 # for i in companies:

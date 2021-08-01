@@ -66,6 +66,21 @@
     xpath 문법
     ```
 * html은 쌍따옴표와 따옴표 구분이 있을까? 
+* selenium 과 beautifulsoup의 차이가 뭘까? 
+    ```
+    https://namu.wiki/w/%ED%81%AC%EB%A1%A4%EB%A7%81
+    selenium은 javascript로 쓰여진 동적 웹페이지 탐색에 쓰이고, beautifulsoup은 정적 웹페이지 탐색에 쓰인다.
+    ```
+* 페이지 로딩 대기 시간을 줄일 수는 없을까? 
+    ```
+    지금은 페이지 로딩 대기 시간을 임의로 7초로 정하였다. 하지만 네트워크 상황에 따라 그보다 먼저 될 수 있고, 나중에 될 수도 있는 것이다. selenium에서는 두 가지 방법이 있다. Implicitly wait: 정해진 시간만큼 기다리는 것과 Explicitly wait: 어떤 조건이 만족할 때까지 기다리는 것. 내가 원하는 방법은 Explicitly wait이 될 것 같다. 
+    ```
+* 새로운 탭을 만들수 있을까? 
+    ```
+    https://www.selenium.dev/documentation/ko/webdriver/keyboard/
+    https://stackoverflow.com/questions/28431765/open-web-in-new-tab-selenium-python/28432939#28432939?newreg=4b06c2a9b80d42a3928fce7fe165ade2
+    키다운이나, 두 개의 키를 보내면 된다. 
+    ```
 
 ### **에러**  
 * DeprecationWarning: use driver.switch_to.alert instead driver.switch_to_alert()
@@ -91,6 +106,20 @@
 * Mixed Content: The page at '' was loaded over HTTPS, but requested an insecure element ''. This request was automatically upgraded to HTTPS, For more information see https://blog.chromium.org/2019/10/no-more-mixed-messages-about-https.html", source: 
     ```
     headless로 크롬창을 끄고 실행하려하니 이러한 경고가 출력되었다. 
+    ```
+* The Python Tools server crashed 5 times in the last 3 minutes. The server will not be restarted.
+    ```
+    openpyxl을 import 하면, 이러한 경고가 생기고, python language server가 crashed하여 자동 완성 기능과 문법오류 red line 기능이 없어진다. 아래 시도를 모두 해보았지만, 모두 되지 않았다. 
+    1. python language server 을 삭제하고, 다시 vscode의 python 파일을 실행시켜 다시 자동으로 다운받도록 하였다. 
+    2. pip를 update하고, openpyxl을 최신 버전으로 업데이트 하였다. 
+    3. from openpyxl import load_workbook 으로 하위 항목만을 import 하였다. 
+    4. vscode 의 모든 extension 을 삭제하고 다시 설치하였다.  
+    이외에 로그를 확인하여 파악하는 법이 있었지만, 아직 로그를 분석하지 못한다. pylence 와 특정 package 간의 연관성이 있는 걸까? 
+    ```
+* 랜덤 위치에서 element를 찾을 수 없다는 에러와 함께 중간에 멈춘다. 
+    ```
+    인터넷 상황에 따라 로딩 시간이 달라서 딜레이를 주고 실행해도 똑같이 중간에 멈추었다. 
+    어쩌면 스크래핑 봇으로 인하여 서버에 부하가 생겨 서버 측에서 조치를 취한 게 아닐까 생각이 든다. 이 때 크롤러나 스크래핑 봇으로 데이터를 수집할 때 중요한 점을 알게 되었다. 1. 허용된 루트 2. 서버 부하. 접근을 허용하는 루트는 robots.txt.에 있듯이 명시해두었고, 서버 부하는 봇이 해당 서버에 너무 많은 요청을 보내면 서버에 부하가 생겨 지장을 줄 수 있다는 것이다. 그래서 크롤러와 스크래핑 봇에 대한 부정적인 인식이 크다. 그러므로 요청 속도를 조절하고, 요쳥량이 최대한 적도록 설계해야 한다. 
     ```
 ----
 ## **참고문서**  
