@@ -1,7 +1,6 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import openpyxl
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,20 +18,10 @@ class FDC:
     # options.add_argument("headless")
     # options.add_argument('window-size=1920x1080')
     # options.add_argument("disable-gpu")
-    driver = webdriver.Chrome('chromedriver.exe')
-    driver.get("https://comp.fnguide.com/SVO2/ASP/SVD_UJRank.asp?pGB=1&gicode=A079160&cID=&MenuYn=Y&ReportGB=&NewMenuID=301&stkGb=701")
     update_num = 0
 
     def __init__(self):
         super().__init__()
-        selectopt = self.driver.find_element_by_id("selUpjong")
-        selectopt.send_keys(Keys.ENTER)
-        selectopt.send_keys(Keys.ARROW_UP)
-        selectopt.send_keys(Keys.ENTER)
-        self.click_search()
-        self.update_company_list()
-        self.set_frame()
-        self.update_finance_data()
 
     def click_search(self):
         time.sleep(1)
@@ -46,9 +35,28 @@ class FDC:
             print('로딩 시간 초과')
 
     def update_company_list(self):
-        companies = self.driver.find_elements_by_xpath('//tbody/tr[@class]/td[@class=" l tbold"]/a')
-        for i in companies:
-            self.companies_name.append(i.text)
+        driver = webdriver.Chrome('chromedriver.exe')
+        driver.get("https://comp.fnguide.com/SVO2/ASP/SVD_UJRank.asp?pGB=1&gicode=A079160&cID=&MenuYn=Y&ReportGB=&NewMenuID=301&stkGb=701")
+        time.sleep(2)
+        selectopt = driver.find_element_by_id("selUpjong")
+        selectopt.send_keys(Keys.ENTER)
+        selectopt.send_keys(Keys.ARROW_UP)
+        selectopt.send_keys(Keys.ENTER)
+
+        button = driver.find_element_by_id("btnSearch")    # 검색 버튼
+        button.send_keys(Keys.ENTER)
+        wait = WebDriverWait(driver, 10)
+        try:
+            element = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@id="UJRankGrid"]//tbody/tr[2400]')))
+        except:
+            print('로딩 시간 초과')
+            
+        tmplist = driver.find_elements_by_xpath('//tbody/tr[@class]/td[@class=" l tbold"]/a')
+        companies = []
+        for i in tmplist:
+            companies.append(i.text)
+        driver.close()
+        return companies
 
     def update_finance_data(self):
         for i in range(1, 100):         # 순위 목록 순서대로 
@@ -132,62 +140,3 @@ class FDC:
             self.long_term_borrowings.append("N/A")
             print('장기차입금: N/A')
         self.driver.back()          # 제무제표 페이지 아웃
-
-    def set_frame(self):
-        wb = openpyxl.load_workbook(r'Financial data.xlsx')
-        ws = wb['즐겨찾기']
-        ws.cell(1, 1, '회사명')
-        ws.cell(1, 2, '주가')
-        ws.cell(1, 3, '시가총액')
-        ws.cell(1, 4, 'PER')
-        ws.cell(1, 5, 'BPS')
-        ws.cell(1, 6, '단기차입금')
-        ws.cell(1, 7, '장기차입금')
-        
-        ws = wb['전체']     
-        ws.cell(1, 1, '회사명')
-        ws.cell(1, 2, '주가')
-        ws.cell(1, 3, '시가총액')
-        ws.cell(1, 4, 'PER')
-        ws.cell(1, 5, 'BPS')
-        ws.cell(1, 6, '단기차입금')
-        ws.cell(1, 7, '장기차입금')
-        wb.save(r'Financial data.xlsx')
-        wb.close()
-
-
-    def print_all_data(self):
-        wb = openpyxl.load_workbook(r'Financial data.xlsx')
-        ws = wb['전체']     
-    
-        for num in range(self.update_num):
-            # 회사명
-            ws.cell(num + 2, 1, self.companies_name[num])
-            # 주가 
-            ws.cell(num + 2, 2, self.stock[num])
-            # 시가총액
-            ws.cell(num + 2, 3, self.market_cap[num])
-            # PER
-            ws.cell(num + 2, 4, self.PER[num])
-            # BPS
-            ws.cell(num + 2, 5, self.BPS[num])
-            # 단기차입금 
-            ws.cell(num + 2, 6, self.short_term_borrowings[num])
-            # 장기차입금
-            ws.cell(num + 2, 7, self.long_term_borrowings[num])
-
-        wb.save(r'Financial data.xlsx')
-        wb.close()
-
-    def print_favorites_data(self):
-        pass
-
-    def add_favorites(self):
-        pass
-
-    def delete_favorites(self):
-        pass
-
-a = FDC()
-#a.update_finance_data() # 데이터 업데이트 - 메모리 - 예상 시간 5시간 
-a.print_all_data() # 엑셀 데이터 출력
