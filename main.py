@@ -2,7 +2,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import openpyxl
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By 
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -21,6 +21,7 @@ class FDC:
     # options.add_argument("disable-gpu")
     driver = webdriver.Chrome('chromedriver.exe')
     driver.get("https://comp.fnguide.com/SVO2/ASP/SVD_UJRank.asp?pGB=1&gicode=A079160&cID=&MenuYn=Y&ReportGB=&NewMenuID=301&stkGb=701")
+    update_num = 0
 
     def __init__(self):
         super().__init__()
@@ -51,14 +52,17 @@ class FDC:
 
     def update_finance_data(self):
         for i in range(1, 100):         # 순위 목록 순서대로 
+            print(self.companies_name[i - 1])
             self.get_data_in_comp_page(i) 
             time.sleep(2)
             self.get_data_in_financial_statements()
+            self.update_num += 1
             time.sleep(3)
             self.driver.back()          # 회사 페이지 아웃
             time.sleep(2.3)
-            print(self.companies_name[i - 1])
             self.click_search()
+            time.sleep(2)
+        self.print_all_data()
         print("Update Complete")
 
     def get_data_in_comp_page(self, i):
@@ -112,6 +116,7 @@ class FDC:
                 self.short_term_borrowings.append(tmplist[len(tmplist) - 2].text)
         except:
             self.short_term_borrowings.append("N/A")
+            print('단기차입금: N/A')
 
         try:
             button = self.driver.find_element_by_id("grid2_7")
@@ -148,14 +153,14 @@ class FDC:
         ws.cell(1, 6, '단기차입금')
         ws.cell(1, 7, '장기차입금')
         wb.save(r'Financial data.xlsx')
-        self.wb.close()
+        wb.close()
 
 
     def print_all_data(self):
         wb = openpyxl.load_workbook(r'Financial data.xlsx')
-        ws = self.wb['전체']     
+        ws = wb['전체']     
     
-        for num in range(1, 100):
+        for num in range(self.update_num):
             # 회사명
             ws.cell(num + 2, 1, self.companies_name[num])
             # 주가 
@@ -172,7 +177,7 @@ class FDC:
             ws.cell(num + 2, 7, self.long_term_borrowings[num])
 
         wb.save(r'Financial data.xlsx')
-        self.wb.close()
+        wb.close()
 
     def print_favorites_data(self):
         pass
@@ -185,4 +190,4 @@ class FDC:
 
 a = FDC()
 #a.update_finance_data() # 데이터 업데이트 - 메모리 - 예상 시간 5시간 
-#a.print_all_data() # 엑셀 데이터 출력
+a.print_all_data() # 엑셀 데이터 출력
