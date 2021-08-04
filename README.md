@@ -90,6 +90,11 @@
     https://stackoverflow.com/questions/28431765/open-web-in-new-tab-selenium-python/28432939#28432939?newreg=4b06c2a9b80d42a3928fce7fe165ade2
     키다운이나, 두 개의 키를 보내면 된다. 
     ```
+* pyinstaller 패키지로 실행 파일을 생성할 때, noconsole 옵션을 사용해도, webdriver을 사용할 때 콘솔 창이 생긴다. 어떻게 해야할까..?
+    ```
+    https://m.blog.naver.com/kibani/221921810439
+    
+    ```
 
 ### **에러**  
 * DeprecationWarning: use driver.switch_to.alert instead driver.switch_to_alert()
