@@ -114,7 +114,7 @@
     ```
 * Mixed Content: The page at '' was loaded over HTTPS, but requested an insecure element ''. This request was automatically upgraded to HTTPS, For more information see https://blog.chromium.org/2019/10/no-more-mixed-messages-about-https.html", source: 
     ```
-    headless로 크롬창을 끄고 실행하려하니 이러한 경고가 출력되었다. 
+    headless로 크롬창을 끄고 실행하려하니 이러한 경고가 출력되었다. 그러나 정상적으로 실행되기는 한다. 
     ```
 * The Python Tools server crashed 5 times in the last 3 minutes. The server will not be restarted.
     ```
