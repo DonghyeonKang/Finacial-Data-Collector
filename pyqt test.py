@@ -31,7 +31,7 @@ class MyApp(QWidget, FDC):
         btn2.setStyleSheet("background-color: grey")
         btn2.setFont(QtGui.QFont('SansSerif', 15))
         btn2.resize(400, 80)
-        btn1.clicked.connect(self.update_table)
+        btn2.clicked.connect(self.update_table)
         # 리스트
         self.list = QListWidget(self)
         self.list.resize(400, 500)
@@ -56,21 +56,36 @@ class MyApp(QWidget, FDC):
         fdc = FDC()
         self.companies = fdc.update_company_list()
         for i in self.companies:
-            self.list.addItem(i)
+            self.list.addItem(i[0])
 
     def update_table(self):
-        pass
+        fdc = FDC()
+        fdc.update_finance_data(self.selected_companies)
+        for i in range(self.tableitemnum):
+            stock = QTableWidgetItem(fdc.stock[i])
+            self.table.setItem(i, 1, stock)
+            marcap = QTableWidgetItem(fdc.market_cap[i])
+            self.table.setItem(i, 2, marcap)
+            PER = QTableWidgetItem(fdc.PER[i])
+            self.table.setItem(i, 3, PER)
+            BPS = QTableWidgetItem(fdc.BPS[i])
+            self.table.setItem(i, 4, BPS)
+            stb = QTableWidgetItem(fdc.short_term_borrowings[i])
+            self.table.setItem(i, 5, stb)
+            ltb = QTableWidgetItem(fdc.long_term_borrowings[i])
+            self.table.setItem(i, 6, ltb)
 
     def add_to_table(self):
         tmpitem = self.list.currentIndex()
         self.tableitemnum += 1
         self.table.setRowCount(self.tableitemnum)
-        item = QTableWidgetItem(self.companies[tmpitem.row()])
+        item = QTableWidgetItem(self.companies[tmpitem.row()][0])
         self.table.setItem(self.tableitemnum - 1, 0, item)
         self.selected_companies.append(self.companies[tmpitem.row()])
 
     def del_from_table(self):
         self.table.removeRow(self.table.currentRow())
+        del self.selected_companies[self.table.currentRow()]
         self.tableitemnum -= 1
 
 
