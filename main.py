@@ -63,9 +63,9 @@ class FDC:
         self.__init__()     # 리스트 초기화
 
         for i in selected_companies:         # 순위 목록 순서대로 
-            self.get_data(i[1] + 1, driver) 
-            time.sleep(2)
             self.click_search(driver)
+            time.sleep(2)
+            self.get_data(i[1] + 1, driver) 
         driver.close()
 
     def get_data(self, i, driver):
@@ -226,13 +226,15 @@ class MyApp(QWidget, FDC):
 
     def add_to_table(self):
         if self.tableitemnum < 25:
-            tmpitem = self.list.currentIndex()
             self.tableitemnum += 1
             self.table.setRowCount(self.tableitemnum)
-            item = QTableWidgetItem(self.companies[tmpitem.row()][0])
+
+            tmpitem = self.list.currentItem().text()
+            item = QTableWidgetItem(tmpitem)
             self.table.setItem(self.tableitemnum - 1, 0, item)
+
             for i in self.companies:
-                if i[0] == item.text:
+                if i[0] == tmpitem:
                     self.selected_companies.append(i)
         else:
             return
