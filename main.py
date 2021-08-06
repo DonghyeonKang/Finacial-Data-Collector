@@ -152,36 +152,36 @@ class MyApp(QWidget, FDC):
         btn1.move(100, 650)
         btn1.setStyleSheet("background-color: grey")
         btn1.setFont(QtGui.QFont('SansSerif', 15))
-        btn1.resize(400, 80)
+        btn1.resize(250, 80)
         btn1.clicked.connect(self.update_list)
         # 버튼2 
         btn2 = QPushButton('데이터 불러오기', self)
-        btn2.move(900, 650)
+        btn2.move(580, 650)
         btn2.setStyleSheet("background-color: grey")
         btn2.setFont(QtGui.QFont('SansSerif', 15))
-        btn2.resize(400, 80)
+        btn2.resize(250, 80)
         btn2.clicked.connect(self.update_table)
+        # 텍스트 박스 
+        self.textbox = QLineEdit(self)
+        self.textbox.move(100, 50)
+        self.textbox.resize(320, 21)
         # 버튼3
         btn3 = QPushButton("Search", self)
-        btn3.move(425, 70)
+        btn3.move(425, 50)
         btn3.setStyleSheet("background-color: grey")
         btn3.setFont(QtGui.QFont('SansSerif', 9))
         btn3.clicked.connect(self.find_item)
         # 리스트
         self.list = QListWidget(self)
-        self.list.resize(400, 500)
-        self.list.move(100, 100)
+        self.list.resize(400, 520)
+        self.list.move(100, 80)
         self.list.itemDoubleClicked.connect(self.add_to_table)
-        # 텍스트 박스 
-        self.textbox = QLineEdit(self)
-        self.textbox.move(100, 70)
-        self.textbox.resize(320, 21)
         # 테이블
         self.table = QTableWidget(self)
         self.table.setRowCount(0)
         self.table.setColumnCount(7)
         self.table.showGrid()
-        self.table.resize(800, 500)
+        self.table.resize(800, 550)
         self.table.move(520, 50)
         column_headers = ['회사명', '주가', '시가총액', 'PER', 'BPS', '단기차입금', '장기차입금']
         self.table.itemDoubleClicked.connect(self.del_from_table)
@@ -196,6 +196,16 @@ class MyApp(QWidget, FDC):
         self.companies = fdc.update_company_list()
         for i in self.companies:
             self.list.addItem(i[0])
+
+    def update_found_list(self, text):
+        self.list.clear()
+        if text == "":
+            for i in self.companies:
+                self.list.addItem(i[0])
+        else:
+            for i in self.companies:
+                if text == i[0]:
+                    self.list.addItem(i[0])
 
     def update_table(self):
         fdc = FDC()
@@ -231,8 +241,8 @@ class MyApp(QWidget, FDC):
         self.tableitemnum -= 1
 
     def find_item(self):
-        pass
-#        self.list.findItems("")
+        text = self.textbox.text()
+        self.update_found_list(text)
 
 if __name__ == '__main__':
    app = QApplication(sys.argv)
