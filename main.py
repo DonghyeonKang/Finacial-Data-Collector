@@ -142,11 +142,11 @@ class MyApp(QWidget, FDC):
 
     def initUI(self):
         # 윈도우 설정
-        self.setWindowTitle('My First Application')
+        self.setWindowTitle('Finance Data Collector')
         self.setStyleSheet("background-color: white;")
         self.move(250, 100)
         self.resize(1400, 800)
-        
+        self.setWindowIcon(QtGui.QIcon("icon.ico"))
         # 버튼1
         btn1 = QPushButton('회사 목록 업데이트', self)
         btn1.move(100, 650)
@@ -231,7 +231,9 @@ class MyApp(QWidget, FDC):
             self.table.setRowCount(self.tableitemnum)
             item = QTableWidgetItem(self.companies[tmpitem.row()][0])
             self.table.setItem(self.tableitemnum - 1, 0, item)
-            self.selected_companies.append(self.companies[tmpitem.row()])
+            for i in self.companies:
+                if i[0] == item.text:
+                    self.selected_companies.append(i)
         else:
             return
 
