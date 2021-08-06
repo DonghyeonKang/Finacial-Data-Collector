@@ -6,10 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import sys
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QListWidget, QTableWidget, QTableWidgetItem, QTableView, QAbstractItemView
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QListWidget, QTableWidget, QTableWidgetItem, QTableView, QAbstractItemView, QHBoxLayout, QLineEdit, QVBoxLayout
 
 class FDC:
-
     def __init__(self):
         super().__init__()
         self.favorites = []
@@ -22,7 +21,12 @@ class FDC:
         self.long_term_borrowings = []
 
     def click_search(self, driver):
-        time.sleep(1)
+        wait = WebDriverWait(driver, 10)
+        try:
+            element = wait.until(EC.element_to_be_clickable((By.ID, "selUpjong")))
+        except:
+            print('로딩 시간 초과')
+            
         selectopt = driver.find_element_by_id("selUpjong")
         selectopt.send_keys(Keys.ENTER)
         selectopt.send_keys(Keys.ARROW_UP)
@@ -41,7 +45,7 @@ class FDC:
         options.add_argument('headless')
         driver = webdriver.Chrome('chromedriver.exe', options=options)
         driver.get("https://comp.fnguide.com/SVO2/ASP/SVD_UJRank.asp?pGB=1&gicode=A079160&cID=&MenuYn=Y&ReportGB=&NewMenuID=301&stkGb=701")
-        time.sleep(2)
+        time.sleep(1)
         self.click_search(driver)
             
         tmplist = driver.find_elements_by_xpath('//tbody/tr[@class]/td[@class=" l tbold"]/a')
@@ -157,11 +161,21 @@ class MyApp(QWidget, FDC):
         btn2.setFont(QtGui.QFont('SansSerif', 15))
         btn2.resize(400, 80)
         btn2.clicked.connect(self.update_table)
+        # 버튼3
+        btn3 = QPushButton("Search", self)
+        btn3.move(425, 70)
+        btn3.setStyleSheet("background-color: grey")
+        btn3.setFont(QtGui.QFont('SansSerif', 9))
+        btn3.clicked.connect(self.find_item)
         # 리스트
         self.list = QListWidget(self)
         self.list.resize(400, 500)
-        self.list.move(100, 50)
+        self.list.move(100, 100)
         self.list.itemDoubleClicked.connect(self.add_to_table)
+        # 텍스트 박스 
+        self.textbox = QLineEdit(self)
+        self.textbox.move(100, 70)
+        self.textbox.resize(320, 21)
         # 테이블
         self.table = QTableWidget(self)
         self.table.setRowCount(0)
@@ -201,17 +215,24 @@ class MyApp(QWidget, FDC):
             self.table.setItem(i, 6, ltb)
 
     def add_to_table(self):
-        tmpitem = self.list.currentIndex()
-        self.tableitemnum += 1
-        self.table.setRowCount(self.tableitemnum)
-        item = QTableWidgetItem(self.companies[tmpitem.row()][0])
-        self.table.setItem(self.tableitemnum - 1, 0, item)
-        self.selected_companies.append(self.companies[tmpitem.row()])
+        if self.tableitemnum < 25:
+            tmpitem = self.list.currentIndex()
+            self.tableitemnum += 1
+            self.table.setRowCount(self.tableitemnum)
+            item = QTableWidgetItem(self.companies[tmpitem.row()][0])
+            self.table.setItem(self.tableitemnum - 1, 0, item)
+            self.selected_companies.append(self.companies[tmpitem.row()])
+        else:
+            return
 
     def del_from_table(self):
         self.table.removeRow(self.table.currentRow())
         del self.selected_companies[self.table.currentRow()]
         self.tableitemnum -= 1
+
+    def find_item(self):
+        pass
+#        self.list.findItems("")
 
 if __name__ == '__main__':
    app = QApplication(sys.argv)
