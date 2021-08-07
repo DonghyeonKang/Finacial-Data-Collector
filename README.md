@@ -106,6 +106,10 @@
     https://m.blog.naver.com/kibani/221921810439
     
     ```
+* 응답 없음을 어떻게 없앨 수 있을까?
+    ```
+    멀티스레드로 구현할 수 있다고 한다. GUI와 Webdriver를 다른 스레드로 구현해야 한다고 한다. 하지만 파이썬에서는 결국 1개의 스레드를 사용하지만, 여러 개의 스레드를 사용하는 것처럼 보이게 한다고 한다. 
+    ```
 
 ### **에러**  
 * DeprecationWarning: use driver.switch_to.alert instead driver.switch_to_alert()

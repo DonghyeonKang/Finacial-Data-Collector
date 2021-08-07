@@ -1,4 +1,5 @@
 import time
+import openpyxl
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By 
@@ -6,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import sys
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QListWidget, QTableWidget, QTableWidgetItem, QTableView, QAbstractItemView, QHBoxLayout, QLineEdit, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QListWidget, QTableWidget, QTableWidgetItem, QTableView, QAbstractItemView, QHBoxLayout, QLineEdit, QVBoxLayout, QMessageBox, QProgressBar
 
 class FDC:
     def __init__(self):
@@ -139,6 +140,7 @@ class MyApp(QWidget, FDC):
         self.companies = []
         self.tableitemnum = 0
         self.selected_companies = []
+        self.excelopt = 0
 
     def initUI(self):
         # 윈도우 설정
@@ -147,30 +149,37 @@ class MyApp(QWidget, FDC):
         self.move(250, 100)
         self.resize(1400, 800)
         self.setWindowIcon(QtGui.QIcon("icon.ico"))
-        # 버튼1
+        # 회사 목록 업데이트
         btn1 = QPushButton('회사 목록 업데이트', self)
         btn1.move(100, 650)
         btn1.setStyleSheet("background-color: grey")
         btn1.setFont(QtGui.QFont('SansSerif', 15))
-        btn1.resize(250, 80)
+        btn1.resize(200, 80)
         btn1.clicked.connect(self.update_list)
-        # 버튼2 
+        # 데이터 불러오기 버튼
         btn2 = QPushButton('데이터 불러오기', self)
         btn2.move(580, 650)
         btn2.setStyleSheet("background-color: grey")
         btn2.setFont(QtGui.QFont('SansSerif', 15))
-        btn2.resize(250, 80)
+        btn2.resize(180, 80)
         btn2.clicked.connect(self.update_table)
         # 텍스트 박스 
         self.textbox = QLineEdit(self)
         self.textbox.move(100, 50)
         self.textbox.resize(320, 21)
-        # 버튼3
+        # Search 버튼
         btn3 = QPushButton("Search", self)
         btn3.move(425, 50)
         btn3.setStyleSheet("background-color: grey")
         btn3.setFont(QtGui.QFont('SansSerif', 9))
         btn3.clicked.connect(self.find_item)
+        # 엑셀로 출력하기
+        btn4 = QPushButton('엑셀 출력', self)
+        btn4.move(800, 650)
+        btn4.setStyleSheet("background-color: grey")
+        btn4.setFont(QtGui.QFont('SansSerif', 15))
+        btn4.resize(150, 80)
+        btn4.clicked.connect(self.print_excel)
         # 리스트
         self.list = QListWidget(self)
         self.list.resize(400, 520)
@@ -186,8 +195,7 @@ class MyApp(QWidget, FDC):
         column_headers = ['회사명', '주가', '시가총액', 'PER', 'BPS', '단기차입금', '장기차입금']
         self.table.itemDoubleClicked.connect(self.del_from_table)
         self.table.setHorizontalHeaderLabels(column_headers)
-        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)        # 편집 기능 제거
         # 보여주기
         self.show()
 
@@ -223,6 +231,7 @@ class MyApp(QWidget, FDC):
             self.table.setItem(i, 5, stb)
             ltb = QTableWidgetItem(fdc.long_term_borrowings[i])
             self.table.setItem(i, 6, ltb)
+        self.excelopt = 1
 
     def add_to_table(self):
         if self.tableitemnum < 25:
@@ -247,6 +256,63 @@ class MyApp(QWidget, FDC):
     def find_item(self):
         text = self.textbox.text()
         self.update_found_list(text)
+    
+    def print_excel(self):
+        if self.excelopt == 0:
+            return
+
+        try:
+            wb = openpyxl.load_workbook('FDC.xlsx')
+            wb.remove(wb['Data'])
+            ws = wb['Data']
+            ws.append(['회사명', '주가', '시가총액', 'PER', 'BPS', '단기차입금', '장기차입금'])
+            for i in range(self.tableitemnum):
+                stock = self.table.item(i, 1).text()
+                marcap = self.table.item(i, 2).text()
+                PER = self.table.item(i, 3).text()
+                BPS = self.table.item(i, 4).text()
+                stb = self.table.item(i, 5).text()
+                ltb = self.table.item(i, 6).text()
+
+                ws.cell(i + 2, 1, self.selected_companies[i][0])
+                ws.cell(i + 2, 2, stock)
+                ws.cell(i + 2, 3, marcap)
+                ws.cell(i + 2, 4, PER)
+                ws.cell(i + 2, 5, BPS)
+                ws.cell(i + 2, 6, stb)
+                ws.cell(i + 2, 7, ltb)
+            wb.save('FDC.xlsx')
+            wb.close()
+        except:             # no file
+            wb = openpyxl.Workbook()
+            ws =  wb.active
+            ws.title = "Data"
+            ws.append(['회사명', '주가', '시가총액', 'PER', 'BPS', '단기차입금', '장기차입금'])
+            for i in range(self.tableitemnum):
+                stock = self.table.item(i, 1).text()
+                marcap = self.table.item(i, 2).text()
+                PER = self.table.item(i, 3).text()
+                BPS = self.table.item(i, 4).text()
+                stb = self.table.item(i, 5).text()
+                ltb = self.table.item(i, 6).text()
+
+                ws.cell(i + 2, 1, self.selected_companies[i][0])
+                ws.cell(i + 2, 2, stock)
+                ws.cell(i + 2, 3, marcap)
+                ws.cell(i + 2, 4, PER)
+                ws.cell(i + 2, 5, BPS)
+                ws.cell(i + 2, 6, stb)
+                ws.cell(i + 2, 7, ltb)
+            wb.save(filename = 'FDC.xlsx')
+            wb.close()
+
+        msg = QMessageBox()
+        msg.setWindowTitle("알림")
+        msg.setText('엑셀 출력 완료')
+        msg.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+        result = msg.exec_()
+        self.excelopt = 0
+
 
 if __name__ == '__main__':
    app = QApplication(sys.argv)
