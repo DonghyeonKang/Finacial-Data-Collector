@@ -15,6 +15,7 @@ class FDC:
         self.favorites = []
         self.companies_name = []
         self.PER = []
+        self.EPS = []
         self.BPS = []
         self.market_cap = []
         self.stock = []
@@ -88,8 +89,14 @@ class FDC:
             self.market_cap.append("N/A")
 
         try:
+            tmplist = driver.find_elements_by_xpath('//div[@id="svdMainGrid10D"]/table[@class="us_table_ty1 h_fix zigbg_no th_topbdno"]/tbody/tr[4]/td[@class="r"]')
+            self.EPS.append(tmplist[0].text)      
+        except:
+            self.EPS.append("N/A")
+
+        try:
             tmplist = driver.find_elements_by_xpath('//tr[@class="ac_row"]/td[@class="r"]')
-            self.PER.append(tmplist[0].text)        # 첫 번째 요소 값이 PER 값이다. 
+            self.PER.append(tmplist[0].text)       
         except:
             self.PER.append("N/A")
 
@@ -188,11 +195,11 @@ class MyApp(QWidget, FDC):
         # 테이블
         self.table = QTableWidget(self)
         self.table.setRowCount(0)
-        self.table.setColumnCount(7)
+        self.table.setColumnCount(8)
         self.table.showGrid()
         self.table.resize(800, 550)
         self.table.move(520, 50)
-        column_headers = ['회사명', '주가', '시가총액', 'PER', 'BPS', '단기차입금', '장기차입금']
+        column_headers = ['회사명', '주가', '시가총액', 'PER', 'EPS', 'BPS', '단기차입금', '장기차입금']
         self.table.itemDoubleClicked.connect(self.del_from_table)
         self.table.setHorizontalHeaderLabels(column_headers)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)        # 편집 기능 제거
@@ -225,12 +232,14 @@ class MyApp(QWidget, FDC):
             self.table.setItem(i, 2, marcap)
             PER = QTableWidgetItem(fdc.PER[i])
             self.table.setItem(i, 3, PER)
+            EPS = QTableWidgetItem(fdc.EPS[i])
+            self.table.setItem(i, 4, EPS)
             BPS = QTableWidgetItem(fdc.BPS[i])
-            self.table.setItem(i, 4, BPS)
+            self.table.setItem(i, 5, BPS)
             stb = QTableWidgetItem(fdc.short_term_borrowings[i])
-            self.table.setItem(i, 5, stb)
+            self.table.setItem(i, 6, stb)
             ltb = QTableWidgetItem(fdc.long_term_borrowings[i])
-            self.table.setItem(i, 6, ltb)
+            self.table.setItem(i, 7, ltb)
         self.excelopt = 1
 
     def add_to_table(self):
@@ -265,44 +274,48 @@ class MyApp(QWidget, FDC):
             wb = openpyxl.load_workbook('FDC.xlsx')
             wb.remove(wb['Data'])
             ws = wb['Data']
-            ws.append(['회사명', '주가', '시가총액', 'PER', 'BPS', '단기차입금', '장기차입금'])
+            ws.append(['회사명', '주가', '시가총액', 'PER', 'EPS', 'BPS', '단기차입금', '장기차입금'])
             for i in range(self.tableitemnum):
                 stock = self.table.item(i, 1).text()
                 marcap = self.table.item(i, 2).text()
                 PER = self.table.item(i, 3).text()
-                BPS = self.table.item(i, 4).text()
-                stb = self.table.item(i, 5).text()
-                ltb = self.table.item(i, 6).text()
+                EPS = self.table.item(i, 4).text()
+                BPS = self.table.item(i, 5).text()
+                stb = self.table.item(i, 6).text()
+                ltb = self.table.item(i, 7).text()
 
                 ws.cell(i + 2, 1, self.selected_companies[i][0])
                 ws.cell(i + 2, 2, stock)
                 ws.cell(i + 2, 3, marcap)
                 ws.cell(i + 2, 4, PER)
-                ws.cell(i + 2, 5, BPS)
-                ws.cell(i + 2, 6, stb)
-                ws.cell(i + 2, 7, ltb)
+                ws.cell(i + 2, 5, EPS)
+                ws.cell(i + 2, 6, BPS)
+                ws.cell(i + 2, 7, stb)
+                ws.cell(i + 2, 8, ltb)
             wb.save('FDC.xlsx')
             wb.close()
         except:             # no file
             wb = openpyxl.Workbook()
             ws =  wb.active
             ws.title = "Data"
-            ws.append(['회사명', '주가', '시가총액', 'PER', 'BPS', '단기차입금', '장기차입금'])
+            ws.append(['회사명', '주가', '시가총액', 'PER', 'EPS', 'BPS', '단기차입금', '장기차입금'])
             for i in range(self.tableitemnum):
                 stock = self.table.item(i, 1).text()
                 marcap = self.table.item(i, 2).text()
                 PER = self.table.item(i, 3).text()
-                BPS = self.table.item(i, 4).text()
-                stb = self.table.item(i, 5).text()
-                ltb = self.table.item(i, 6).text()
+                EPS = self.table.item(i, 4).text()
+                BPS = self.table.item(i, 5).text()
+                stb = self.table.item(i, 6).text()
+                ltb = self.table.item(i, 7).text()
 
                 ws.cell(i + 2, 1, self.selected_companies[i][0])
                 ws.cell(i + 2, 2, stock)
                 ws.cell(i + 2, 3, marcap)
                 ws.cell(i + 2, 4, PER)
-                ws.cell(i + 2, 5, BPS)
-                ws.cell(i + 2, 6, stb)
-                ws.cell(i + 2, 7, ltb)
+                ws.cell(i + 2, 5, EPS)
+                ws.cell(i + 2, 6, BPS)
+                ws.cell(i + 2, 7, stb)
+                ws.cell(i + 2, 8, ltb)
             wb.save(filename = 'FDC.xlsx')
             wb.close()
 
